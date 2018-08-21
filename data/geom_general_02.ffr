@@ -1,0 +1,857 @@
+C LIST
+C COMPASS general setup - RICH1 and everything downstream
+C Read in sequence of the FF files:
+C   1) this file
+C   2) hadron / muon
+C   3) specific (char / glueball / ...)
+C Detectors: sets      GSET      - shares the definitions in with the next level file
+C Volumes:             GVOL      - shares the definitions in with the next level file
+C Rotation:           <RMATR20   - shares the definitions in with the next level file
+C Material:            GPARMAT   - shares the definitions in with the next level file
+C Medium:              GPARMED   - shares the definitions in with the next level file
+C 
+C
+C ---------------------     GEOMETRY north area experiment -------------------
+C
+C ------------------------------------------------------------------------
+C
+C --    Rotation matrix: the number of the card (last 2 digits) is the number 
+C                        of the matrix
+C
+RMATR01  90.  90.   0.   0.  90.    0.     I is along Y,II along Z,III along X
+RMATR02   0.   0.  90.   0.  90.   90.     I is along Z,II along X,III along Y
+RMATR03  90.   0.   0.   0.  90.  270.  Z  I is along X,II along Z,III oppos Y
+RMATR04  90.   0.  30.  90.  60.  270.     Lam DC
+RMATR05  90.   0. 150.  90.  60.   90.     Lam DC
+RMATR06  90.   0.  45.  90.  45.  270.     Saxis   Octo U
+RMATR07  90.   0.  45. 270. 135.  270.     Taxis  Opp Octo V
+RMATR08  90.   0.  10.14  90. 79.86 270.     Z minus ten degrees
+RMATR09  90.   0. 100.14  90. 10.14  90.     Y minus ten degrees
+C
+RMATR10  67.5 90. 22.5 270.  90.   0.     Auxill  for Octo frames
+RMATR11  90.   0.  90. 270. 180.   0.     I is along X,II oppos Y,III oppos Z
+RMATR12  90.   0. 180.   0.  90.  90.  nZ I is along X,II oppos Z,III along Y
+RMATR13  90.   0. 135. 270. 135.  90.      anti Saxis   
+RMATR14  90.   0. 135.  90.  45.  90.      anti Taxis  
+RMATR15   0.   0.  90. 270.  90.   0.     I is along Z,II oppos Y,III along X
+C              SM1h shells
+RMATR16  90.  10.  90. 100.   0.   0.     I at        ten deg to X
+RMATR17  90. -10.  90.  80.   0.   0.     I at  minus ten deg to X
+RMATR18  90.   0. 100.  90.  10.  90.     Y minus ten degrees
+RMATR19  90. 180.  90. 270.   0.   0.     I oppoz X, II oppos Y, III along Z
+C
+C
+C -- New materials: the number of the card is arbitrary (used to distinguish
+C                                                        the cards)
+C            #       name               A    Z    g/cm3        RLcm   Int.len cm
+C
+GPARMAT01   20 'Silicon$            '  28.  14.   2.33         9.36   45.5   0
+GPARMAT02   21 'Glass borosilic.$   '  19.  10.   2.23        12.7    44.    0
+GPARMAT03   22 'G10           $     '  16.   8.   1.7         19.4    53.0   0
+GPARMAT04   23 'Fiberglass 65%glass$'  17.   9.   1.82        17.     52.0   0
+GPARMAT05   24 'Carbon CERN$        '  12.   6.   1.85        23.     61.0   0
+GPARMAT06   25 'Plastic, scint$     '  12.   6.   1.032       42.4    80.0   0
+GPARMAT07   31 'MWPC cent$          '  12.   6.   0.0085    3400.  12600.0   0
+GPARMAT08   33 'TRD radiator$       '  12.   6.   0.079      538.   1427.0   0
+GPARMAT09   34 'Xenon gas$          ' 131.3 54.   0.0059    1440.  28640.0   0
+GPARMAT10   35 'G10 double density$ '  16.   8.   3.4         10.     26.0   0
+GPARMAT11   36 'Diamond$            '  12.   7.   3.23        13.18   34.93  0
+GPARMAT12   39 'G10/10 - electronics'  16.   8.   0.17       194.    530.0   0
+GPARMAT13   41 'Lead glass SF57$    ' 150.  60.   5.51         1.546  26.9   0
+GPARMAT14   42 'G10*5times density$ '  16.   8.   8.5          3.9    10.1   0
+C      assume 200 CH2 foils (20 um)/radiator spaced by 460 um
+GPARMAT15   51 'TRD2 radiator$      '  12.   6.   0.038     1104.   1794.0   0
+C      assume 2 chambers 4mm thicknes filled with 90% Xenon (why so light?)
+GPARMAT16   52 'TRD2 Xenon gas$     ' 131.3 54.   0.00043   2000.  39000.0   0
+c      mean A mean Z and lambda_int for mean A taken
+GPARMAT17   53 'Perm Magnet Sm2Co17$'  68.5 30.68 8.4          1.52   16.1   0
+GPARMAT18   54 'Freon 12 $          '  16.  13.   0.0049    4810.  20000.0   0
+GPARMAT19   55 'Neon $              '  22.  10.   0.0009   32000. 106000.0   0
+GPARMAT20   56 'Honeycomb 6layr=6cm$'  12.   6.   0.03      1300.   2600.0   0
+GPARMAT21   57 'Fused quarz SiO2$   '  19.  10.   2.32        11.7    42.6   0
+GPARMAT22   58 'Argon$              '  40.  18.   0.00178  11000.  10000.0   0
+GPARMAT23   59 'Carb.struc dens.05$ '  12.   6.   0.1        425.5  1128.5   0
+GPARMAT24   61 'Carb.frame,dens=2$  '  12.   6.   2.0         21.2    56.    0
+C
+C -- New materials: mixtures
+C            #       name            g/cm3    Nmat    A1  Z1  W1    A2  Z2  W2  
+C
+GPARMXT01   50 'Mylar$              ' 1.39     -3     12.  6.  5.    1.  1.  4.   16.  8.  2.
+GPARMXT02   60 'Straw kapton+fibers$' 1.70     -3     12.  6.  5.    1.  1.  4.   16.  8.  2.
+GPARMXT03   26 'Ar CO2 80/20$       ' 0.00182  -3     40. 18.  8.   12.  6.  2.   16.  8.  4.
+C
+C
+C -- Media definition: 
+C          Convention: (not binding, but just to keep some order)  
+C                   med=med0 + field*200 + sens*400
+C                   where 0<med0<200
+C                   HALL contains the medium #1, (air with or without the field)
+C                   Fan,Dmul,Elo and st are calculated automatically if AUTO>0 (default)
+C                                           or if the given value is negative.
+C                                                  
+C           #       name             mat sen F Fmx Fan Dmul  Elo epsi st(mu,lo)  user words
+C
+GPARMED01    1 'Air, mag  field$    '  15  0  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED02  201 'Air, mag. field$    '  15  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED03    2 'Air,   nmf$         '  15  0  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED04  202 'Air,    mf$         '  15  0  1 30. -1. -1.   -1.   0.05   -1. 
+GPARMED05    4 'Freon-12,  nmf$     '  54  0  0  0. -1. -1.   -1.   1.     -1.
+GPARMED06    5 'Neon,      nmf$     '  55  0  0  0. -1. -1.   -1.   1.     -1. 
+GPARMED07    6 'Liquid H2, nmf$     '   1  0  0  0. -1. -1.   -1.   0.02   -1. 
+GPARMED08  206 'Liquid H2, ,mf$     '   1  0  1 30. -1. -1.   -1.   0.02   -1. 
+GPARMED09    7 'Silicon, no mf, $   '  20  0  0  0. -1. -1.   -1.   0.05   -1. 
+GPARMED10  407 'Silicon, no mf, sn$ '  20  1  0  0. -1. -1.   -1.   0.0002 -1. 
+GPARMED11  607 'Silicon, no mf, sn$ '  20  1  1 30. -1. -1.   -1.   0.0002 -1. 
+GPARMED12   11 'MWPC 1 nmf $        '  31  0  0  0. -1. -1.   -1.   0.02   -1.
+GPARMED13  211 'MWPC 1  mf $        '  31  0  1 30. -1. -1.   -1.   0.02   -1.
+GPARMED14  411 'MWPC 1 nmf sn$      '  31  1  0  0. -1. -1.   -1.   0.02   -1.
+GPARMED15  611 'MWPC 1  mf sn$      '  31  1  1 30. -1. -1.   -1.   0.02   -1.
+GPARMED16   12 'MWPC fram.    nmf$  '  22  0  0  0. -1. -1.   -1.   0.4    -1. 
+GPARMED17  212 'MWPC fram.     mf$  '  22  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED18   13 'frame. 2*denst,nmf$ '  35  0  0  0. -1. -1.   -1.   0.4    -1. 
+GPARMED19  213 'frame. 2*denst, mf$ '  35  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED20   15 'A/B MWPC electron$  '  39  0  0  0. -1. -1.   -1.   0.4    -1. 
+GPARMED21  215 'A/B MWPC electro mf$'  39  0  1 30. -1. -1.   -1.   0.4    -1. 
+GPARMED22   17 'MSGC glass   nmf$   '  21  1  1 30. -1. -1.   -1.   0.02   -1.  
+GPARMED23  217 'MSGC glass    mf$   '  21  1  1 30. -1. -1.   -1.   0.02   -1.  
+GPARMED24   18 'Carb. dens.05 nmf$  '  59  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED25  218 'Carb. dens.05  mf$  '  59  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED26   19 'Kapton straw  nmf$  '  60  0  0  0. -1. -1.   -1.   0.002  -1. 
+GPARMED27  219 'Kapton straw   mf$  '  60  0  1 30. -1. -1.   -1.   0.002  -1. 
+GPARMED28   20 'Carb. dens.2  nmf$  '  61  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED29  220 'Carb. dens.2   mf$  '  61  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED30   23 'Glass nmf$          '  21  0  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED31  223 'Glass mf$           '  21  0  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED32   24 'Plastic nmf$        '  25  0  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED33  224 'Plastic  mf$        '  25  0  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED34  425 'Scintillator nmf$   '  25  1  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED35  625 'Scintillator  mf$   '  25  1  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED36   31 'Target copper nmf$  '  11  0  0  0. -1. -1.   -1.   0.002  -1. 
+GPARMED37  231 'Target copper  mf$  '  11  0  0  0. -1. -1.   -1.   0.002  -1. 
+GPARMED38   32 'Brass         nmf$  '  11  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED39  232 'Brass          mf$  '  11  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED40  233 'Target perm-mag 2$  '  53  1  1 10. -1. -1.   -1.   0.002  -1.  
+GPARMED41   35 'Alum, nmf$          '   9  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED42  235 'Alum,  mf$          '   9  0  1 30. -1. -1.   -1.   0.2    -1. 
+GPARMED43   50 'Mylar   nmf$        '  50  0  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED44  250 'Mylar    mf$        '  50  0  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED45  450 'Mylar   nmf sn$     '  50  1  0 30. -1. -1.   -1.   0.1    -1. 
+GPARMED46  650 'Mylar    mf sn$     '  50  1  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED47   54 'Lead glass SF57  $  '  41  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED48  454 'Lead glass   sn$    '  41  1  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED49   55 'Lead glass (abs)$   '  41  0  0  0. -1. -1.   -1.   0.2    -1. 
+GPARMED50   56 'Honeycomb no mf$    '  56  0  0  0. -1. -1.   -1.   0.02   -1. 
+GPARMED51  156 'Honeycomb no mf sen$'  56  1  0  0. -1. -1.   -1.   0.02   -1. 
+GPARMED52   57 'Fused quarz, nmf$   '  57  1  0  0. -1. -1.   -1.   0.02   -1. 
+GPARMED53   58 'ArgonCO2 8/2 nmf$   '  58  0  0  0. -1. -1.   -1.   0.1    -1. 
+GPARMED54  258 'ArgonCO2 8/2 nmf$   '  58  0  1 30. -1. -1.   -1.   0.1    -1. 
+GPARMED55  458 'ArgonCO2 8/2 nmf sn$'  58  1  0  0. -1. -1.   -1.   0.02   -1. 
+GPARMED56  658 'ArgonCO2 8/2  mf sn$'  58  1  1 30. -1. -1.   -1.   0.02   -1. 
+GPARMED57   95 'Steel nmf$          '  10  0  0  0. -1. -1.   -1.   0.2    -1.
+GPARMED58  295 'Steel  mf$          '  10  0  1 30. -1. -1.   -1.   0.2    -1.
+GPARMED59   96 'Steel nmf$          '  10  0  0  0. -1. -1.   -1.   0.2    -1.
+GPARMED60  296 'Steel  mf$          '  10  0  0  0. -1. -1.   -1.   0.2    -1.
+GPARMED61   97 'Absorber$           '  10  0  0  0. -1. -1.   -1.   1.     -1. 
+GPARMED62   98 'Escape area$        '  15  0  0  0. -1. -1.   -1.   1.     -1. 
+GPARMED63   99 'Dead absorber$      '  10  0  0  0. -1. -1.   -1.   1.     -1. 
+C
+C
+C --                       Areas
+C
+C            start       up to ...
+C --   Attention: areas should be a bit wider than the mag. fields
+C          beam     target,mag1        mag2
+MEDAREA      1    201      1      1    201      1      1 
+MAGAREA      0      2      0      0      5      0      0
+XMNAREA    -550.   150.   550.   550.  1250.  1950.  6000.
+YMXAREA     500.   500.   500.   500.   500.   500.   500.
+ZMXAREA     500.   500.   500.   500.   500.   500.   500.
+C
+C ---              Define magnet positions... in MRS (Master Reference System)
+C        !!!       If you move the magnet - update the values:
+C                  AREA ...
+C                  MAGNET ...
+C                  magnet volume positions
+C         Xcen  Ycen  Zcen   rot  scale   flag1 flag2 
+MAGNET5  1600.    0.    0.    0     1.      0     1    FSM field expanded in the yoke
+C
+C --               ======        Volumes     =======
+C =====================================================================================
+C      The volume for the world is called HALL. It is a box of sizes taken from the AREA
+C      cards. (With the current definitions it is 8000,1000,1000cm**3 full size)
+C --   All this GENERAL part of the setup is placed directly into HALL.
+C
+C --   All the general setup is split into several blocks. Some of these blocks
+C      serve only for simplification of moving different objects. 
+C      The names of these artificial volumes start with A.
+C      At the moment there are only 6 objects which are put directly into HALL:
+C      (ordered along the beam):
+C
+C      ACR1   - the RICH1 
+C      ACS3   - Coordinate STation 3
+C      LG1    - Lead Glass 1 (ECAL1)
+C      AHM1   - Hadron calorimeter / muon wall 1
+C      MAG2   - SM2 magnet
+C      ASP2   - Everything downstream of SM2      
+C
+C --   If the MRS is changed - move these 6 volumes and also the MAGNET5.
+C
+C --   Do NOT put little pieces to HALL directly !! 
+C      If something is moved they may be forgotten. Try to use the existing blocks.
+C =====================================================================================
+C         name   med  mother    X     Y     Z  rot  shape npar  par.....
+C --                            Magnet 1  - defined elsewere
+C
+C --                            Magnet 2 (SFM)
+GPARVOL11 'MAG2' 295  'HALL'  1600.    0.    0.  0  'BOX '  3   200.  300.  200.
+GPARVOL12 'M2GP' 201  'MAG2'     0.    0.    0.  0  'BOX'   3   200.  100.   50.
+GPARVOL15 'M2D1'  97  'MAG2'   199.9   0.    0.  0  'BOX'   3     0.1 300.  200.
+GPARVOL16 'M2DH' 201  'M2D1'     0.    0.    0.  0  'BOX'   3     0.1 100.   50.
+C
+C --     A block of chambers just downstream of the RICH-1 (Coordinate STation 3)
+C
+GPARVOL20 'ACS3'   2  'HALL'   880.    0.    0.  0  'BOX '  3    60.  450.  450.
+C
+C --     RICH-1 behind MAG1
+GPARVOL30 'ACR1'   2  'HALL'   650.    0.    0.  0  'BOX '  3  160. 450.  450.
+GPARVOL31 'CER1'   4  'ACR1'    10.    0.    0.  1  'TRD2'  5  160. 280.  120. 200. 150.
+GPARVOL32 'C1W1'  35  'CER1'     0.    0. -149.5 0  'BOX '  3  159. 119.  0.05
+GPARVOL33 'C1W2'  24  'CER1'     0.    0. -149.  0  'BOX '  3  159. 119.  0.15
+GPARVOL34 'C1M1'  23  'CER1'     0.    0.  140.  0  'BOX '  3  270. 190.  0.2
+GPARVOL35 'C1W3'  35  'CER1'     0.    0.  149.  0  'BOX '  3  279. 199.  0.05
+GPARVOL36 'C1W4'  24  'CER1'     0.    0.  149.5 0  'BOX '  3  279. 199.  0.1
+GPARVOL37 'C1H1'   2  'C1M1'     0.    0.    0.  0  'BOX '  3    3.   3.  0.2
+C
+C --     LG behind first Cherenkov (med=55 may be used as an absorber for photons)
+GPARVOL40 'LG1 '   2  'HALL'   970.    0.    0.  0  'BOX '  3   21.  200. 150. 
+GPARVOL41 'LG1S' 454  'LG1 '   -20.1   0.    0.  0  'BOX '  3    0.1 200. 150. 
+GPARVOL42 'LG1H'   2  'LG1S'     0.    0.    0.  0  'BOX '  3    0.1  55.  30. 
+GPARVOL43 'LG1D'  54  'LG1 '   -17.    0.    0.  0  'BOX '  3    3.  200. 150. 
+GPARVOL44 'LG1Q'   2  'LG1D'     0.    0.    0.  0  'BOX '  3    3.   55.  30. 
+GPARVOL45 'LG1E'  55  'LG1 '     3.    0.    0.  0  'BOX '  3   17.  200. 150. 
+GPARVOL46 'LG1F'  54  'LG1E'     0.    0.    0.  0  'BOX '  3   17.   65.  40. 
+GPARVOL47 'LG1G'   2  'LG1F'     0.    0.    0.  0  'BOX '  3   17.   55.  30. 
+C
+C --     HCAL1, MU-1 (med=96 may be used as an absorber for photons and hadrons)
+C
+GPARVOL51 'AHM1'   1  'HALL'  1210.    0.    0.  0  'BOX '  3  180.  250.  200. 
+GPARVOL52 'HC1F'  96  'AHM1'  -100.    0.    0.  0  'BOX '  3   50.  200.  150. 
+GPARVOL53 'HC1G'  95  'HC1F'     0.    0.    0.  0  'BOX '  3   50.   92.   60. 
+GPARVOL54 'HC1H'   2  'HC1G'     0.    0.    0.  0  'BOX '  3   50.   72.   40.
+GPARVOL55 'HO1S' 425  'AHM1'   -40.    0.    0.  0  'BOX '  3    1.  200.  150.
+GPARVOL56 'HO1H'   2  'HO1S'     0.    0.    0.  0  'BOX '  3    1.   72.   40.
+C
+GPARVOL63 'MU1F'  95  'AHM1'    60.    0.    0.  0  'BOX '  3   50.  250.  200. 
+GPARVOL64 'MU1H'   1  'MU1F'     0.    0.    0.  0  'BOX '  3   50.   80.   40.   
+GPARVOL65 'HO2S' 425  'AHM1'   120.    0.    0.  0  'BOX '  3    1.  250.  200.
+GPARVOL66 'HO2H'   1  'HO2S'     0.    0.    0.  0  'BOX '  3    1.   80.   40.
+C
+C --     Sperctometer arm downstream of the second magnet 
+C                       RICH behind MAG2
+GPARVOL70 'ASP2'   1  'HALL'  2810.    0.    0.  0  'BOX '  3 1000.  450.   450.  
+C --     RICH-2 behind MAG2
+GPARVOL71 'CER2'   5  'ASP2'  -450.    0.    0.  1  'TRD2'  5  120. 220.  60. 120. 400.
+GPARVOL72 'C2W1'  35  'CER2'     0.    0. -399.  0  'BOX '  3  119.  59.  0.1
+GPARVOL73 'C2M1'  23  'CER2'     0.    0.  390.  0  'BOX '  3  210. 110.  0.3
+GPARVOL74 'C2W2'  35  'CER2'     0.    0.  399.  0  'BOX '  3  219. 119.  0.1
+GPARVOL75 'C2H1'   2  'C2M1'     0.    0.    0.  0  'BOX '  3    5.   5.  0.3
+C
+C --     LG-2
+GPARVOL80 'LG2 '   2  'ASP2'   300.    0.    0.  0  'BOX '  3   21.  200. 100. 
+GPARVOL81 'LG2S' 454  'LG2 '   -20.1   0.    0.  0  'BOX '  3    0.1 200. 100. 
+GPARVOL82 'LG2I'   2  'LG2S'     0.   -2.    0.  0  'BOX '  3    0.1   3.   3. 
+GPARVOL83 'LG2D'  54  'LG2 '   -17.    0.    0.  0  'BOX '  3    3.  200. 100. 
+GPARVOL84 'LG2Q'   2  'LG2D'     0.   -2.    0.  0  'BOX '  3    3.    3.   3. 
+GPARVOL85 'LG2E'  55  'LG2 '     3.    0.    0.  0  'BOX '  3   17.  200. 100. 
+GPARVOL86 'LG2F'  54  'LG2E'     0.   -2.    0.  0  'BOX '  3   17.   15.  15. 
+GPARVOL87 'LG2H'   2  'LG2F'     0.    0.    0.  0  'BOX '  3   17.    3.   3. 
+C
+C --     HCAL2, MU-2
+GPARVOL90  'HM2 '   2  'ASP2'   700.    0.    0.  0  'BOX '  3  280.  240.  110.
+GPARVOL91  'HC2F'  96  'HM2 '  -180.    0.    0.  0  'BOX '  3  100.  240.  110. 
+GPARVOL92  'HC2E'  96  'HC2F'     0.   -2.    0.  0  'BOX '  3  100.   20.   20. 
+C GPARVOL92  'HC2E'  95  'HC2F'     0.   -2.    0.  0  'BOX '  3  100.   20.   20. 
+GPARVOL93  'HC2H'   2  'HC2E'     0.    0.    0.  0  'BOX '  3  100.    3.    3. 
+GPARVOL94  'HO3S'  24  'HM2 '   -60.    0.    0.  0  'BOX '  3    1.  240.  110.
+GPARVOL95  'HO3H'   2  'HO3S'     0.   -2.    0.  0  'BOX '  3    1.    3.    3.
+GPARVOL96  'MU2F'  96  'HM2 '   100.    0.    0.  0  'BOX '  3  100.  240.  110. 
+GPARVOL97  'MU2E'  96  'MU2F'     0.   -2.    0.  0  'BOX '  3  100.   20.   20. 
+C GPARVOL97  'MU2E'  95  'MU2F'     0.   -2.    0.  0  'BOX '  3  100.   20.   20. 
+GPARVOL99  'MU2H'   2  'MU2E'     0.    0.    0.  0  'BOX '  3  100.    3.    3. 
+GPARVOL100 'HO4S'  24  'HM2 '   220.    0.    0.  0  'BOX '  3    1.  240.  110.
+GPARVOL101 'HO4H'   2  'HO4S'     0.   -2.    0.  0  'BOX '  3    1.    3.    3.
+C
+C ---                   Time 0 point
+C
+XYZTIME0     -500. 0. 0.
+C
+C
+C ---  Absorbers
+C
+MEDABSORB1 97 1 2 3 4 7 8     all but muons and geantino
+C
+C ---                   Beam ???
+C
+C
+C ------------------------------------------------------------------------
+C
+C ===   This detector is defined here, since it is the same for all configurations,
+C ===   but it should be positioned in the data files to follow
+C
+C ---            Detector set "MB1 " - beam silicon m-strips.  
+C                                   300mk thick, 25mk pitch
+C                                    3 coordinates/unit
+C
+GSET01NAME      'MB1 '
+GSET01TYPE      21            type (microstrips)
+GSET01UNITS      0            number of units    
+GSET01GATE       80.          effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X   Y   Z   shape  npar   X     Y     Z
+GSET01VOL1PAR   407  4   0    0.   0. 0.  'BOX '  3   0.015  2.5   2.5
+GSET01VOL2PAR   407  5   0    0.   0. 0.  'BOX '  3   0.015  2.5   2.5
+GSET01VOL3PAR     7  6   0    0.   0. 0.  'BOX '  3   0.015  2.5   2.5
+GSET01VOL4PAR    13  7   0   -0.4  0. 0.  'BOX '  3   0.015  10.0  10.0
+GSET01VOL5PAR    13  7   0    0.   0. 0.  'BOX '  3   0.015  10.0  10.0
+GSET01VOL6PAR    13  7   6    0.4  0. 0.  'BOX '  3   0.015  10.0  10.0
+GSET01VOL7PAR     2  0   0    0.   0. 0.  'BOX '  3   0.8    16.   16.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET01PLA1PAR   2000   0.0025      0.   -2.49875     0
+GSET01PLA2PAR   2000   0.0025     90.   -2.49875     0
+GSET01PLA3PAR   2000   0.0025      0.   -2.49875     0
+C
+C ----                     Units
+C
+GSET01UNIMOTH   '    ' 
+GSET01UNIROTM   0
+GSET01UNICENX   0.
+GSET01UNICENY   0.
+GSET01UNICENZ   0.
+C
+C
+C  All planes:
+GSET01DETEFFI         1.
+GSET01DETBACK         0.
+C GSET01DETID          1  2  3  4  5  6  7  8  9 10
+C                   11 12
+C
+C ------------------------------------------------------------------------
+C
+C ---            Detector set "MW1 " - MWPC in SM2 
+C ---                                       (thickness - like A chambers) 
+GSET02NAME      'MW1 '
+GSET02TYPE       1            type (MWPC)
+GSET02UNITS      4            number of units
+GSET02GATE       80.          effective gate length (ns)
+C
+C Thickness:   cm  g/cm**2 Rad.l.  Abs.l.  Col.l. 
+C center      6.8  0.058  0.00200 0.00054 0.00070
+C
+C --                       Volumes
+C                              posit                   1/2 size
+C              med moth rot  X   Y    Z   shape  npar   X     Y     Z
+GSET02VOL1PAR   611  4    0  -1.6 0.   0.  'BOX '  3     0.8  91.3  40.
+GSET02VOL2PAR   611  4    0   0.  0.   0.  'BOX '  3     0.8  91.3  40.
+GSET02VOL3PAR   611  4    0   1.6 0.   0.  'BOX '  3     0.8  91.3  40.
+GSET02VOL4PAR   211  5    0   0.  0.   0.  'BOX '  3     3.4  93.   43.
+GSET02VOL5PAR   212  6    0   0.  0.   0.  'BOX '  3     3.4  99.   49.
+GSET02VOL6PAR     1  0    0   0.  0.   0.  'BOX '  3     9.0  99.   49.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET02PLA1PAR   400    0.2       90.    -39.9       0
+GSET02PLA2PAR   912    0.2        0.    -91.2       0
+GSET02PLA3PAR   944    0.2       19.8   -94.4       0
+C
+C ----            Units
+GSET02UNIMOTH    'M2GP'   'M2GP'  'M2GP'  'M2GP'  
+GSET02UNIROTM       0        0       19      19  
+GSET02UNICENX    -160.    -100.     -30.     30.
+GSET02UNICENY       0.       0.       0.      0.
+GSET02UNICENZ       0.       0.       0.      0.
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET02DETWIRY       20*1.E6
+GSET02DETWIRZ       20*1.E6
+GSET02DETEFFI       20*1.
+GSET02DETBACK       20*0.
+C GSET02DETID                    output identifier
+C
+C
+C ------------------------------------------------------------------------
+C
+C
+C ---            Detector set "MG1 " - MSGC (SAT+VSAT)
+C
+GSET03NAME      'MG1 '
+GSET03TYPE      26            type (MSGC)
+GSET03UNITS     7             number of units
+GSET03GATE       80.          effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X   Y   Z   shape  npar   X     Y     Z
+GSET03VOL1PAR   217  8    0   0.  0.  0.  'BOX '  3   0.025 12.5  12.5 
+GSET03VOL2PAR   217  9    0   0.  0.  0.  'BOX '  3   0.025 12.5  12.5
+GSET03VOL3PAR   217 10    0   0.  0.  0.  'BOX '  3   0.025 12.5  12.5
+GSET03VOL4PAR   650 14    0   0.  0.  0.  'BOX '  3   0.01   2.5   2.5 
+GSET03VOL5PAR   650 15    0   0.  0.  0.  'BOX '  3   0.01   2.5   2.5
+GSET03VOL6PAR   650 16    0   0.  0.  0.  'BOX '  3   0.01   2.5   2.5
+GSET03VOL7PAR   218  0    0   0.  0.  0.  'BOX '  3   2.4   20.0 130.0
+GSET03VOL8PAR   201 11    0   0.  0.  0.  'BOX '  3   0.4   12.6  12.6
+GSET03VOL9PAR   201 12    0   0.  0.  0.  'BOX '  3   0.4   12.6  12.6
+GSET03VOLAPAR   201 13    0   0.  0.  0.  'BOX '  3   0.4   12.6  12.6
+GSET03VOLBPAR   223  7    0  -2.0 0.  0.  'BOX '  3   0.4   12.8  12.8
+GSET03VOLCPAR   223  7    3  -1.2 0.  0.  'BOX '  3   0.4   12.8  12.8
+GSET03VOLDPAR   223  7    6  -0.4 0.  0.  'BOX '  3   0.4   12.8  12.8
+GSET03VOLEPAR   201 17    0   0.  0.  0.  'BOX '  3   0.1    2.5   2.5
+GSET03VOLFPAR   201 18    0   0.  0.  0.  'BOX '  3   0.1    2.5   2.5
+GSET03VOLGPAR   201 19    0   0.  0.  0.  'BOX '  3   0.1    2.5   2.5
+GSET03VOLHPAR   220 20    0   0.  0.  0.  'BOX '  3   0.1    2.9  12.5
+GSET03VOLIPAR   220 21    0   0.  0.  0.  'BOX '  3   0.1    2.9  12.5
+GSET03VOLJPAR   220 22    0   0.  0.  0.  'BOX '  3   0.1    2.9  12.5
+GSET03VOLKPAR   201  7    0   0.4 0.  0.  'BOX '  3   0.4   12.5  12.5
+GSET03VOLLPAR   201  7    3   1.2 0.  0.  'BOX '  3   0.4   12.5  12.5
+GSET03VOLMPAR   201  7    6   2.0 0.  0.  'BOX '  3   0.4   12.5  12.5
+GSET03VOLNPAR   220 20    0   0.25 0. 0.  'BOX '  3   0.15   2.9   2.9
+GSET03VOLOPAR   220 21    0   0.25 0. 0.  'BOX '  3   0.15   2.9   2.9
+GSET03VOLPPAR   220 22    0   0.25 0. 0.  'BOX '  3   0.15   2.9   2.9
+GSET03VOLQPAR   201 23    0   0.   0. 0.  'BOX '  3   0.15   2.5   2.5
+GSET03VOLRPAR   201 24    0   0.   0. 0.  'BOX '  3   0.15   2.5   2.5
+GSET03VOLSPAR   201 25    0   0.   0. 0.  'BOX '  3   0.15   2.5   2.5
+GSET03VOLTPAR   223  1    0   0.  0.  0.  'BOX '  3   0.025  2.3   2.3 
+GSET03VOLUPAR   223  2    0   0.  0.  0.  'BOX '  3   0.025  2.3   2.3 
+GSET03VOLVPAR   223  3    0   0.  0.  0.  'BOX '  3   0.025  2.3   2.3 
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET03PLA1PAR  1250   0.0200      0.   -12.49        0
+GSET03PLA2PAR  1250   0.0200      0.   -12.49        0
+GSET03PLA3PAR  1250   0.0200      0.   -12.49        0
+GSET03PLA4PAR   250   0.0200      0.    -2.49        0
+GSET03PLA5PAR   250   0.0200      0.    -2.49        0
+GSET03PLA6PAR   250   0.0200      0.    -2.49        0
+C
+C ----            Units
+C
+GSET03UNIMOTH    'ACS3' 'AHM1' 'AHM1' 'AHM1' 'ASP2' 'ASP2' 'ASP2' 
+GSET03UNIROTM    20*0
+GSET03UNICENX     -47.  -160.0  -20.   140.  -960.0  -870.  150.   
+GSET03UNICENY    20*0.
+GSET03UNICENZ    20*0.
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET03DETEFFI      8*1.
+GSET03DETBACK      8*0.
+C GSET03DETID        61  62  63  64  65  66  67  68
+C
+C
+C ------------------------------------------------------------------------ 
+C
+C ---   Detector set "DM1 " - Drift (MDT) chambers ==> (HC3,H10,HC11)
+C                             3 layers/unit
+C
+GSET04NAME     'DM1 '
+GSET04TYPE      11             type (DC)
+GSET04UNITS     36             number of units
+GSET04GATE     350.            effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X     Y    Z   shape  npar   X       Y     Z
+GSET04VOL1PAR   458  5    0  -3.12  0.   0.  'BOX '  3     1.5    100.  100.
+GSET04VOL2PAR   458  5    0   0.    0.   0.  'BOX '  3     1.5    100.  100.
+GSET04VOL3PAR   458  5    0   3.12  0.   0.  'BOX '  3     1.5    100.  100.
+GSET04VOL4PAR     2  0    0   0.    0.   0.  'BOX '  3     5.0    100.  115.
+GSET04VOL5PAR    35  4    0   0.    0.   0.  'BOX '  3     4.68   100.  103.
+GSET04VOL6PAR    35  4    0   0.    0. 109.  'BOX '  3     0.1    100.    6.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET04PLA1PAR     64    3.0        0.     -96.00     0
+GSET04PLA2PAR     64    3.0        0.     -94.50     0
+GSET04PLA3PAR     64    3.0        0.     -96.00     0
+C
+C ----            Units
+C
+GSET04UNIMOTH   'ACS3' 'ACS3' 'ACS3'    'ACS3' 'ACS3' 'ACS3'   
+                'ACS3' 'ACS3' 'ACS3'    'ACS3' 'ACS3' 'ACS3' 
+                'ACS3' 'ACS3' 'ACS3'    'ACS3' 'ACS3' 'ACS3' 
+                'ASP2' 'ASP2' 'ASP2'    'ASP2' 'ASP2' 'ASP2'   
+                'ASP2' 'ASP2' 'ASP2'    'ASP2' 'ASP2' 'ASP2'   
+                'ASP2' 'ASP2' 'ASP2'    'ASP2' 'ASP2' 'ASP2'   
+GSET04UNIROTM      0      3     18         0      3     18 
+                   0      3     18         0      3     18 
+                   0      3     18         0      3     18 
+                   0      3     18         0      3     18 
+                   0      3     18         0      3     18 
+                   0      3     18         0      3     18 
+GSET04UNICENX    -30.   -20.   -10.      -30.   -20.   -10.
+                   0.    10.    20.        0.    10.    20.
+                  30.    40.    50.       30.    40.    50.
+                  20.    30.    40.       20.    30.    40.  
+                  80.    90.   100.       80.    90.   100.  
+                 140.   150.   160.      140.   150.   160.  
+GSET04UNICENY       0.     0.     0.        0.     0.     0.
+                -194.  -194.  -194.      194.   194.   194.
+                -194.  -194.  -194.      194.   194.   194.
+                -194.  -194.  -194.      194.   194.   194.
+                -194.  -194.  -194.      194.   194.   194.
+                -194.  -194.  -194.      194.   194.   194.
+GSET04UNICENZ    -144.  -144.  -144.      144.   144.   144.
+                 -97.   -97.   -97.      -97.   -97.   -97.   
+                  97.    97.    97.       97.    97.    97.   
+                   0.     0.     0.        0.     0.     0.
+                   0.     0.     0.        0.     0.     0.
+                   0.     0.     0.        0.     0.     0.
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET04DETEFFI     200*1.
+GSET04DETBACK     200*0.
+GSET04DETVELO     200*0.005                             drift velocity
+GSET04DETTIM0     200*350.                               time zero
+GSET04DETDRES     200*900.            double hit resolution (in time slices)
+GSET04DETSRES     200*3.              space resolution (in time slices)
+GSET04DETSLIC     200*1.              time slices in ns
+C GSET04DETID        101 102 103 104 105 106
+C                   111 112 113 114 115 116
+C                   121 122 123 124 125 126
+C                   131 132 133 134 135 136
+C                   141 142 143 144 145 146
+C                   151 152 153 154 155 156
+C
+C
+C
+C
+C ------------------------------------------------------------------------ 
+C
+C ---   Detector set "DS1 " - Drift (straw) chambers ==> plugs 200x100cm**2  (HC3,H10,HC11)
+C                             6 layers/unit (2 layers = 1 full plane)
+C
+GSET05NAME     'DS1 '
+GSET05TYPE      11             type (DC)
+GSET05UNITS      1             number of units
+GSET05GATE      60.            effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X     Y    Z   shape  npar   X       Y     Z
+GSET05VOL1PAR   458  9    0  -0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL2PAR   458  9    0   0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL3PAR   458 10    0  -0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL4PAR   458 10    0   0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL5PAR   458 11    0  -0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL6PAR   458 11    0   0.309 0.   0.  'BOX '  3     0.3    100.   50.
+GSET05VOL7PAR     2  8    0   0.    0.   0.  'BOX '  3     4.0    110.   50.
+GSET05VOL8PAR    18  0    0   0.    0.   0.  'BOX '  3     4.0    120.  200.
+GSET05VOL9PAR    19  7    0  -2.5   0.   0.  'BOX '  3     0.618  100.   50.
+GSET05VOLAPAR    19  7    0   0.0   0.   0.  'BOX '  3     0.618  100.   50.
+GSET05VOLBPAR    19  7    0   2.5   0.   0.  'BOX '  3     0.618  100.   50.
+GSET05VOLCPAR    13  8    0  -2.5   0.  60.  'BOX '  3     0.1    100.   10.
+GSET05VOLDPAR    13  8    0  -2.5   0. -60.  'BOX '  3     0.1    100.   10.
+GSET05VOLEPAR    13  8    0   0.    0.  60.  'BOX '  3     0.1    100.   10.
+GSET05VOLFPAR    13  8    0   0.    0. -60.  'BOX '  3     0.1    100.   10.
+GSET05VOLGPAR    13  8    0   2.5   0.  60.  'BOX '  3     0.1    100.   10.
+GSET05VOLHPAR    13  8    0   2.5   0. -60.  'BOX '  3     0.1    100.   10.
+GSET05VOLIPAR    58  1    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET05VOLJPAR    58  2    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET05VOLKPAR    58  3    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET05VOLLPAR    58  4    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET05VOLMPAR    58  5    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET05VOLNPAR    58  6    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET05PLA1PAR    398    0.5        0.     -99.75     0
+GSET05PLA2PAR    398    0.5        0.     -99.25     0
+GSET05PLA3PAR    368    0.5      -22.5    -91.75     0
+GSET05PLA4PAR    368    0.5      -22.5    -91.25     0
+GSET05PLA5PAR    368    0.5       22.5    -91.75     0
+GSET05PLA6PAR    368    0.5       22.5    -91.25     0
+C
+C ----            Units
+C
+GSET05UNIMOTH    'ACS3' 
+GSET05UNIROTM    20*0
+GSET05UNICENX     -55.   
+GSET05UNICENY    20*0.
+GSET05UNICENZ       0.   
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET05DETEFFI     200*1.
+GSET05DETBACK     200*0.
+GSET05DETVELO     200*0.005                             drift velocity
+GSET05DETTIM0     200*80.                               time zero
+GSET05DETDRES     200*900.            double hit resolution (in time slices)
+GSET05DETSRES     200*3.              space resolution (in time slices)
+GSET05DETSLIC     200*1.              time slices in ns
+C GSET05DETID        101 102 103 104 105 106
+C                   111 112 113 114 115 116
+C                   121 122 123 124 125 126
+C                   131 132 133 134 135 136
+C
+C
+C
+C ------------------------------------------------------------------------ 
+C
+C ---            Detector set "DS2 " - Drift (straw) chambers ==> HC8,HC9
+C                                      6 layers/unit (2 layers = 1 full plane)
+C
+GSET06NAME     'DS2 '
+GSET06TYPE      11             type (DC)
+GSET06UNITS      4             number of units
+GSET06GATE      60.            effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X     Y    Z   shape  npar   X       Y     Z
+GSET06VOL1PAR   658  9    0  -0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL2PAR   658  9    0   0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL3PAR   658 10    0  -0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL4PAR   658 10    0   0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL5PAR   658 11    0  -0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL6PAR   658 11    0   0.309 0.   0.  'BOX '  3     0.3    120.   60.
+GSET06VOL7PAR   201  8    0   0.    0.   0.  'BOX '  3     4.0    130.   60.
+GSET06VOL8PAR   218  0    0   0.    0.   0.  'BOX '  3     4.0    140.  200.
+GSET06VOL9PAR   219  7    0  -2.5   0.   0.  'BOX '  3     0.618  120.   60.
+GSET06VOLAPAR   219  7    0   0.0   0.   0.  'BOX '  3     0.618  120.   60.
+GSET06VOLBPAR   219  7    0   2.5   0.   0.  'BOX '  3     0.618  120.   60.
+GSET06VOLCPAR   213  8    0  -2.5   0.  70.  'BOX '  3     0.1    120.   10.
+GSET06VOLDPAR   213  8    0  -2.5   0. -70.  'BOX '  3     0.1    120.   10.
+GSET06VOLEPAR   213  8    0   0.    0.  70.  'BOX '  3     0.1    120.   10.
+GSET06VOLFPAR   213  8    0   0.    0. -70.  'BOX '  3     0.1    120.   10.
+GSET06VOLGPAR   213  8    0   2.5   0.  70.  'BOX '  3     0.1    120.   10.
+GSET06VOLHPAR   213  8    0   2.5   0. -70.  'BOX '  3     0.1    120.   10.
+GSET06VOLIPAR   258  1    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET06VOLJPAR   258  2    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET06VOLKPAR   258  3    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET06VOLLPAR   258  4    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET06VOLMPAR   258  5    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET06VOLNPAR   258  6    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET06PLA1PAR    476    0.5        0.     -119.75     0
+GSET06PLA2PAR    476    0.5        0.     -119.25     0
+GSET06PLA3PAR    440    0.5      -22.5    -111.75     0
+GSET06PLA4PAR    440    0.5      -22.5    -111.25     0
+GSET06PLA5PAR    440    0.5       22.5    -111.75     0
+GSET06PLA6PAR    440    0.5       22.5    -111.25     0
+C
+C ----            Units
+C
+GSET06UNIMOTH    'ASP2' 'ASP2' 'ASP2' 'ASP2'   
+GSET06UNIROTM    20*0
+GSET06UNICENX    -970.  -940.  -910.  -880.
+GSET06UNICENY    20*0.
+GSET06UNICENZ    20*0.
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET06DETEFFI     200*1.
+GSET06DETBACK     200*0.
+GSET06DETVELO     200*0.005                             drift velocity
+GSET06DETTIM0     200*80.                               time zero
+GSET06DETDRES     200*900.            double hit resolution (in time slices)
+GSET06DETSRES     200*3.              space resolution (in time slices)
+GSET06DETSLIC     200*1.              time slices in ns
+C GSET06DETID        101 102 103 104 105 106
+C                   111 112 113 114 115 116
+C                   121 122 123 124 125 126
+C                   131 132 133 134 135 136
+C
+C
+C ------------------------------------------------------------------------ 
+C
+C ---            Detector set "DS3 " - Drift (straw) chambers ==> HC5,HC6,HC7
+C                                      6 layers/unit (2 layers = 1 full plane)
+C
+GSET07NAME     'DS3 '
+GSET07TYPE      11             type (DC)
+GSET07UNITS      3             number of units
+GSET07GATE      60.            effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X     Y    Z   shape  npar   X       Y     Z
+GSET07VOL1PAR   658  9    0  -0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL2PAR   658  9    0   0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL3PAR   658 10    0  -0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL4PAR   658 10    0   0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL5PAR   658 11    0  -0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL6PAR   658 11    0   0.309 0.   0.  'BOX '  3     0.3     80.   40.
+GSET07VOL7PAR   201  8    0   0.    0.   0.  'BOX '  3     4.0     90.   40.
+GSET07VOL8PAR   218  0    0   0.    0.   0.  'BOX '  3     4.0    100.  200.
+GSET07VOL9PAR   219  7    0  -2.5   0.   0.  'BOX '  3     0.618   80.   40.
+GSET07VOLAPAR   219  7    0   0.0   0.   0.  'BOX '  3     0.618   80.   40.
+GSET07VOLBPAR   219  7    0   2.5   0.   0.  'BOX '  3     0.618   80.   40.
+GSET07VOLCPAR   213  8    0  -2.5   0.  50.  'BOX '  3     0.1     80.   10.
+GSET07VOLDPAR   213  8    0  -2.5   0. -50.  'BOX '  3     0.1     80.   10.
+GSET07VOLEPAR   213  8    0   0.    0.  50.  'BOX '  3     0.1     80.   10.
+GSET07VOLFPAR   213  8    0   0.    0. -50.  'BOX '  3     0.1     80.   10.
+GSET07VOLGPAR   213  8    0   2.5   0.  50.  'BOX '  3     0.1     80.   10.
+GSET07VOLHPAR   213  8    0   2.5   0. -50.  'BOX '  3     0.1     80.   10.
+GSET07VOLIPAR   258  1    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET07VOLJPAR   258  2    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET07VOLKPAR   258  3    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET07VOLLPAR   258  4    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET07VOLMPAR   258  5    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+GSET07VOLNPAR   258  6    0   0.    0.   0.  'BOX '  3     0.3     12.   12.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET07PLA1PAR    318    0.5        0.     -79.75     0
+GSET07PLA2PAR    318    0.5        0.     -79.25     0
+GSET07PLA3PAR    294    0.5      -22.5    -72.75     0
+GSET07PLA4PAR    294    0.5      -22.5    -72.25     0
+GSET07PLA5PAR    294    0.5       22.5    -72.75     0
+GSET07PLA6PAR    294    0.5       22.5    -72.25     0
+C
+C ----            Units
+C
+GSET07UNIMOTH    'AHM1' 'AHM1' 'AHM1'    
+GSET07UNIROTM    20*0
+GSET07UNICENX    -170.   -30.   130.  
+GSET07UNICENY    20*0.
+GSET07UNICENZ    20*0.
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET07DETEFFI     200*1.
+GSET07DETBACK     200*0.
+GSET07DETVELO     200*0.005                             drift velocity
+GSET07DETTIM0     200*80.                               time zero
+GSET07DETDRES     200*900.            double hit resolution (in time slices)
+GSET07DETSRES     200*3.              space resolution (in time slices)
+GSET07DETSLIC     200*1.              time slices in ns
+C GSET07DETID        101 102 103 104 105 106
+C                   111 112 113 114 115 116
+C                   121 122 123 124 125 126
+C
+C
+C ------------------------------------------------------------------------
+C
+C
+C ---            Detector set "VSF " - beam - fiber hodoscopes (at the moment like m-strips) 
+C
+C
+GSET08NAME      'VSF '
+GSET08TYPE      21            type (microstrips)
+GSET08UNITS      4            number of units
+GSET08GATE       4.          effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X      Y     Z   shape  npar   X     Y     Z
+GSET08VOL1PAR   425  4   0   -0.125  0.   0.  'BOX '  3   0.125  4.0   4.0
+GSET08VOL2PAR   425  4   0    0.125  0.   0.  'BOX '  3   0.125  4.0   4.0
+GSET08VOL3PAR    18  0   0    0.     0.   0.  'BOX '  3   1.0   16.  200.
+GSET08VOL4PAR     2  3   0    0.     0.   0.  'BOX '  3   1.0    4.    4.
+GSET08VOL5PAR    24  3   0   -0.125  0. 102.  'BOX '  3   0.125  4.0  98.
+GSET08VOL6PAR    24  3   0    0.125  8.  98.  'BOX '  3   0.125  4.0 102.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET08PLA1PAR     80   0.1         0.   -3.9        0
+GSET08PLA2PAR     80   0.1        90.   -3.9        0
+C
+C ----                     Units
+C
+GSET08UNIMOTH   'ACR1' 'AHM1' 'ASP2' 'ASP2' 
+GSET08UNIROTM   8*0
+GSET08UNICENX   -158.   -10.   -860.   160.
+GSET08UNICENY   8*0.
+GSET08UNICENZ   8*0.
+C
+C
+C  All planes:
+GSET08DETEFFI       8*1.
+GSET08DETBACK       8*0.
+C GSET08DETID          1  2  3  4  5  6  7  8  9 10
+C                   11 12
+C
+C
+C ------------------------------------------------------------------------ 
+C
+C ---   Detector set "DS4 " - Drift (straw) chambers ==> plugs 200x100cm**2  (HC3,H10,HC11)
+C                             6 layers/unit (2 layers = 1 full plane)
+C
+GSET09NAME     'DS4 '
+GSET09TYPE      11             type (DC)
+GSET09UNITS      3             number of units
+GSET09GATE      60.            effective gate length (ns)
+C
+C                              posit                   1/2 size
+C              med moth rot  X     Y     Z   shape  npar   X       Y     Z
+GSET09VOL1PAR   458  9    0  -0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL2PAR   458  9    0   0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL3PAR   458 10    0  -0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL4PAR   458 10    0   0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL5PAR   458 11    0  -0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL6PAR   458 11    0   0.309 0.    0.  'BOX '  3     0.3    100.  100.
+GSET09VOL7PAR     2  8    0   0.    0.    0.  'BOX '  3     4.0    110.  100.
+GSET09VOL8PAR    18  0    0   0.    0.    0.  'BOX '  3     4.0    120.  200.
+GSET09VOL9PAR    19  7    0  -2.5   0.    0.  'BOX '  3     0.618  100.  100.
+GSET09VOLAPAR    19  7    0   0.0   0.    0.  'BOX '  3     0.618  100.  100.
+GSET09VOLBPAR    19  7    0   2.5   0.    0.  'BOX '  3     0.618  100.  100.
+GSET09VOLCPAR    13  8    0  -2.5   0.  110.  'BOX '  3     0.1    100.   10.
+GSET09VOLDPAR    13  8    0  -2.5   0. -110.  'BOX '  3     0.1    100.   10.
+GSET09VOLEPAR    13  8    0   0.    0.  100.  'BOX '  3     0.1    100.   10.
+GSET09VOLFPAR    13  8    0   0.    0. -110.  'BOX '  3     0.1    100.   10.
+GSET09VOLGPAR    13  8    0   2.5   0.  100.  'BOX '  3     0.1    100.   10.
+GSET09VOLHPAR    13  8    0   2.5   0. -110.  'BOX '  3     0.1    100.   10.
+GSET09VOLIPAR    58  1    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+GSET09VOLJPAR    58  2    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+GSET09VOLKPAR    58  3    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+GSET09VOLLPAR    58  4    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+GSET09VOLMPAR    58  5    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+GSET09VOLNPAR    58  6    0   0.    0.    0.  'BOX '  3     0.3     12.   12.
+C
+C --                       Planes
+C             #wires  pitch     angle  wir1-orig  flag
+GSET09PLA1PAR    398    0.5        0.     -99.75     0
+GSET09PLA2PAR    398    0.5        0.     -99.25     0
+GSET09PLA3PAR    368    0.5      -22.5    -91.75     0
+GSET09PLA4PAR    368    0.5      -22.5    -91.25     0
+GSET09PLA5PAR    368    0.5       22.5    -91.75     0
+GSET09PLA6PAR    368    0.5       22.5    -91.25     0
+C
+C ----            Units
+C
+GSET09UNIMOTH    'ASP2' 'ASP2' 'ASP2' 
+GSET09UNIROTM    20*0
+GSET09UNICENX       0.    60.   120.   
+GSET09UNICENY    20*0.
+GSET09UNICENZ       0.     0.     0. 
+C
+C
+C  All planes:
+C      The value of coordinates are ignored (the unit is centered on the X)
+C                 if >1.E5
+GSET09DETEFFI     200*1.
+GSET09DETBACK     200*0.
+GSET09DETVELO     200*0.005                             drift velocity
+GSET09DETTIM0     200*80.                               time zero
+GSET09DETDRES     200*900.            double hit resolution (in time slices)
+GSET09DETSRES     200*3.              space resolution (in time slices)
+GSET09DETSLIC     200*1.              time slices in ns
+C GSET09DETID        101 102 103 104 105 106
+C                   111 112 113 114 115 116
+C                   121 122 123 124 125 126
+C                   131 132 133 134 135 136
+C
+C
+C ------------------------------------------------------------------------ 
+END

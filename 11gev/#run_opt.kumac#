@@ -1,0 +1,245 @@
+MACRO run_opt e=10.59 nev=20 suf=0 nq=0 dq=0.001 sim=0
+*
+* === magnetic field optimization 4quads
+*
+* ve/de *
+
+  if $VDIM(magn,1)<6 then  
+    ve/cr magn(6) r 
+  endif 
+
+        fld=3.0
+        mgf=[fld]/5.0 
+        mess Solenoid factor=[mgf] field=[fld]T
+        mess Ebeam=[e]GeV
+
+** -6.56   -5.93  2.50  6.14   3.0  11.9
+
+	  do m1=-6600,-6400,40
+	  q1=[m1]/1000.
+	    do m2=-6140,-5900,40
+	    q2=[m2]/1000.
+	      do m3=2300,3500,100
+	      q3=[m3]/1000.
+	         do m4=5610,6200,40
+	         q4=[m4]/1000.
+		         do dip=1150,1150,10
+		         dp=[dip]/100.
+
+   ve/in magn [q1] [q2] [q3] [q4] [fld] [dp]
+	ve/pr magn
+
+  q11=abs([q1])
+  q22=abs([q2])
+  if [q11]>6.7 then 
+    mess Warning!!! Q1>6.7kG (315A=6.72kG)
+    goto fend
+  endif
+  if [q22]>6.15 then
+    mess Warning!!! Q2>6.15kG (315A=6.20kG)
+    goto fend
+  endif
+  if [q3]>5.6 then
+    mess Warning!!! Q3>5.6kG (260A=5.64kG)
+    goto fend
+  endif
+  if [q4]>6.2 then
+     mess Warning!!! Q4>6.2kG  (315A=6.25kG)   
+     goto fend
+  endif
+  if [dp]>11.91 then
+     mess Warning!!! Dipole>11.91kG 
+     goto eend
+  endif
+
+*===========
+* wait
+*===========
+
+  if $VDIM(xmcoo,1)<6 then  
+    ve/cr xmcoo(6) r 
+  endif
+*** 2013
+  ve/in xmcoo 75.19 140.46 209.08 274.59 0.0  423.40
+  if $VDIM(typ,1)<6 then  
+    ve/cr typ(6) r 
+  endif
+  ve/in typ 1  1  1  1  9  2
+  if $VDIM(xs,1)<6 then  
+    ve/cr xs(6) r 
+  endif
+  ve/in xs 5.08  5.08  5.08  5.08  20.0  8.001    
+  if $VDIM(ys,1)<6 then  
+    ve/cr ys(6) r 
+  endif
+  ve/in ys 5.08  5.08  5.08  5.08  20.0  30.001   
+  if $VDIM(zs,1)<6 then  
+    ve/cr zs(6) r 
+  endif
+*** 2013
+ ve/in zs 18.29 22.3 18.37 18.37  80.0  82.25
+
+  if $VDIM(sval,1)<4 then  
+    ve/cr  sval(4) r 
+    ve/cr esval(4) r 
+  endif
+  if $VDIM(vinit,1)<6 then  
+    ve/cr  vinit(6) r
+  else
+    ve/in vinit 6*0
+  endif
+  graphics/option stat
+
+hdir=~wmhenry/geant3/comg/ntup_his/
+  namh=[hdir]//'[e]_[q1]_'//'[q2]_'//'[q3]_'//[q4]//'.his'
+  naml=[hdir]//'[e]_[q1]_'//'[q2]_'//'[q3]_'//[q4]//'.log'
+  namn=[hdir]//'[e]_[q1]_'//'[q2]_'//'[q3]_'//[q4]//'.nt'
+*  namn=[hdir]//'[e]_[q1]_'//'[q2]_'//'[q3]_'//[dp]//'.nt'
+
+  if [sim]=0 then
+      goto nanalys
+  elseif [sim]=2 then
+      goto fill
+  endif
+
+  shell cp omg_0.ffr  omg.ffr
+  k=$INDEX([e],'.')
+  if [k]=0 then
+     e=[e]//'.0'
+  endif
+  e0=[e]-0.0001
+  e1=[e]+0.0001
+  shell echo TRIG   [nev]   events >> omg.ffr
+  shell echo BEAMOMLIM    [e0]  [e1]   momentum limits >> omg.ffr
+  shell echo MAGNET05  10=[mgf] >> omg.ffr
+
+  if $VDIM(eqq)<7 then
+    ve/cr eqq(7) r
+  endif
+  ve/in eqq(1) [e]
+   ve/cr nm(5) i   1  2  3  4  6
+ 
+  do n=1,5
+  j=nm([n])
+*    ve/in magn(1) [j]
+    x=xmcoo([j])
+    typ=typ([j])
+    xs=xs([j])
+    ys=ys([j])
+    zs=zs([j])
+    k=$INDEX([x],'.')
+    if [k]=0 then
+       x=[x]//'.0'
+    endif
+*    fun=~/paw/moller/mag_optim/sett_mag.f([e])
+*    fun=sett_mag.f([e])
+*    q=$CALL([fun])
+*!!!!!!!!
+    q=magn([j])
+    if [j]=[nq] then
+       q=[q]+[dq]
+    endif
+    k=$INDEX([q],'.')
+    if [k]=0 then
+       q=[q]//'.'
+    endif
+     nam='MAGNET0'//[j]
+     shell echo [nam]  [typ] \'HALL\'  0.    0.  [x]    0  [xs]   [ys]   [zs]  [q]    0    0    Q one  >> omg.ffr
+    j1=[j]+1
+    ve/in eqq([j1]) [q]
+  enddo
+
+shell  nice /u/home/wmhenry/geant3/comg/11gev/comg_inter.exe > log
+   shell mv log [naml]
+
+  fill:
+  clo 0
+  h/del 0
+  graphics/option grid
+***************create files
+  h/fil 1 csimout.nt
+  shell mv csimout.nt [namn]
+  graphics/option nbox
+  exec  fill lun=lun1exec id=1000
+ zone 1 2
+ hi/pl 1010
+ set hcol 2
+ hi/pl 1011 s
+ set hcol 6
+ hi/pl 1012 s
+ set hcol 4
+ hi/pl 1013 s
+ set hcol 1
+ hi/pl 1020
+ set hcol 2
+ hi/pl 1021 s
+ set hcol 6
+ hi/pl 1022 s
+ set hcol 4
+ hi/pl 1023 s
+ set hcol 1
+ zone
+  clo 1
+  cd //pawc
+  1dh 1003 'E,q1-q6' 6 0. 6.
+  h/put_vec/con 1003 eqq
+
+  h/fil 1 [namh] ! N
+  hrout 0
+
+     nanalys:
+
+  clo 0
+  cd //pawc
+
+  h/get_vec/con 1003 vinit
+  ve/pri vinit
+  nsim=$HINFO(1030,'ENTRIES')
+  n1arm=$HINFO(1031,'ENTRIES')
+  n2arm=$HINFO(1033,'ENTRIES')
+  anp=$HINFO(1033,'MEAN')
+  anpr=$HINFO(1033,'RMS')
+  eanp=$SIGMA([anpr]/SQRT([n2arm]))
+  acc1= $SIGMA(REAL([n2arm])/REAL([nsim]))
+  eacc1=$SIGMA(SQRT([acc1]*(1.-[acc1])/[nsim]))
+  acc2=$SIGMA(REAL([n2arm])/REAL([n1arm]))
+  eacc2=$SIGMA(SQRT([acc2]*(1.-[acc2])/[n1arm]))
+  theta=$HINFO(1013,'RMS')
+  phi=$HINFO(1023,'RMS')
+  err=$SIGMA(100./SQRT([n2arm]))
+  tmean=$HINFO(1011,'MEAN')
+
+  ve/in  sval(1)  [anp]
+  ve/in esval(1) [eanp]
+  ve/in  sval(2)  [acc1]
+  ve/in esval(2) [eacc1]
+  ve/in  sval(3)  [acc2]
+  ve/in esval(3) [eacc2]
+
+  if $VDIM(kin,1)<8 then  
+    ve/cr kin(8) r 
+  endif
+  ve/cr kin(8) r
+  ve/in kin [theta] [phi] [nsim] [n1arm] [n2arm] [anp] [err] [tmean]
+
+  mess Events=[nev]  Calorimeter=[nsim]   Single=[n1arm] Coins.=[n2arm]
+  mess Ener=[e] [nq] [dq] An.power=[anp]+/-[eanp]  Acc=[acc1]+/-[eacc1]
+  mess Theta=[theta]    Phi=[phi]  Stat.Err=[err]
+  mess Single arm Theta mean=[tmean]
+  mess file=[namn]
+ 
+  eend:
+ 
+ ve/write magn(1),magn(2),magn(3),magn(4),magn(6),kin(1),kin(2),kin(3),kin(4),kin(5),kin(6),kin(7),kin(8),magn(5) run_opt.dat (5F6.2,2F6.2,3F8.0,F8.4,F6.3,F7.3,F5.2)
+
+ shell cat run_opt.dat >> sum_opt.dat
+* shell rm [namn]
+              enddo
+	    enddo
+	  enddo
+	enddo
+		enddo
+
+ fend:
+
+RETURN

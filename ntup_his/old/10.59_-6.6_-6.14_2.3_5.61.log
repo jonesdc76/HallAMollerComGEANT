@@ -1,0 +1,48 @@
+  *************************************************** 
+  *                                                 * 
+  *               G E A N T   3 . 2 1               * 
+  *                                                 * 
+  *                    C E R N                      * 
+  *                                                 * 
+  *               15/3/94  Geneva  CH               * 
+  *                                                 * 
+  *************************************************** 
+
+ MZSTOR.  ZEBRA table base TAB(0) in /MZCC/ at adr    56200271     3598C4F HEX
+
+ MZSTOR.  Initialize Store  0  in /GCBANK/
+          with Store/Table at absolute adrs    35110797    56200271
+                                        HEX     217BF8D     3598C4F
+                                        HEX    FEBE30AA           0
+                              relative adrs   -21090134           0
+          with     1 Str. in     2 Links in  10100 Low words in 3999970 words.
+          This store has a fence of   16 words.
+
+ MZLOGL.  Set Log Level 0 for store  0
+
+ MZSTOR.  Initialize Store  1  in /PAWC/  
+          with Store/Table at absolute adrs    39110825    41110416
+                                        HEX     254C8A9     2734B90
+                                        HEX    FEFB39C6    FF19BF41
+                              relative adrs   -17090106   -15089855
+          with     1 Str. in     1 Links in   5001 Low words in 1999990 words.
+          This store has a fence of    5 words.
+
+ MZLINK.  Initialize Link Area  /HCBOOK/  for Store  1 NL/NS=    49     4
+
+ MZDIV.   Initialize Division  KUIP Div  in Store  1
+          NW/NWMAX=   50002000000,  MODE/KIND=  1  1
+          Division  3 initialized.
+
+ MZLINK.  Initialize Link Area  /KCLINK/  for Store  1 NL/NS=    20     7
+
+ MZLINK.  Initialize Link Area  /KCVADD/  for Store  1 NL/NS=    16    16
+ ******************************************************
+ *                                                    *
+ *            W E L C O M E    to   P A W             *
+ *                                                    *
+ *       Version 2.14/04      12 January 2004         *
+ *                                                    *
+ ******************************************************
+ Workstation type (?=HELP) <CR>=1 :   Invalid workstation type
+ Workstation type (?=HELP) <CR>=1 : 

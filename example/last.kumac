@@ -1,0 +1,16 @@
+*** Begin of history file: Fri Feb 23 11:56:26 2018
+exec plot_setup
+exec eve
+shell ls
+shell more omg.ffr
+shell ls
+more fort.15
+shell more fort.15
+ls
+hi/list
+ls
+shell ls
+shell more dete*
+exxit
+exit
+*** End   of history file: Fri Feb 23 12:07:20 2018

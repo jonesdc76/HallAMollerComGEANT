@@ -1,0 +1,35 @@
+*** Begin of history file: Thu May 24 10:42:27 2018
+hi/fil 1 Dp-15.his
+hi/list
+hi/pl 1020
+hi/pl 1020 s
+hi/pl 1023 s
+clo
+hi/pl 1023 s
+clo 0
+hi/pl 1023 s
+hi/pl 1023 s
+hi/fil 1 Dp+15.his
+hi/pl 1023 s
+hi/pl 1023 s
+hi/pl 1023 s
+clo 0
+hi/pl 1023 s
+clo 0
+hi/fil 1 tuned.his
+hi/pl 1023 s
+hi/pl 1020
+hi/fil 1 Dp+15.his
+clo 0
+hi/fil 1 Dp+15.his
+hi/pl 1023 s
+clo 0
+hi/fil 1 Dp-15.his
+hi/pl 1023 s
+clo 0
+hi/pl 1023 s
+clo 0
+clo 0
+hi/pl 1023 s
+exit
+*** End   of history file: Thu May 24 10:51:12 2018

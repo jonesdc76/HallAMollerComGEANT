@@ -1,0 +1,271 @@
+MACRO run_sum_levchuk_f e0=8.8 nev=200000 sim=5 shell=1 dif=1  pri=0 dq=0.01 par=1 fil=1
+*
+* === run GEANT for Moller with Levchuk effect
+*     sim=1 - run GEANT on FARM, write an ntuple, read it, 
+*             fill histograms, write them out and analyze the data
+*         5 - run /bin/comgeant etc
+*         2 - read the histogram file and analyze the data
+*         0 - go to result (no histograms)
+
+  if $VDIM(magn,1)<6 then  
+    ve/cr magn(6) r
+  endif
+  if $VDIM(nd,1)<1 then 
+    ve/cr nd(1) r
+  endif
+
+    if [par]=1 then 
+  ve/in magn -5.4  -4.0  3.6  5.4  3.0  11.9
+    elseif [par]=2 then
+  ve/in magn -5.3  -4.0  3.6  5.4  3.0  11.9
+    elseif  [par]=3 then
+  ve/in magn -5.2  -4.0  3.6  5.4  3.0  11.9
+     endif
+ 
+        q1=magn(1)
+        q2=magn(2)
+        q3=magn(3)
+        q4=magn(4)
+        fld=magn(5)
+        q6=magn(6)
+
+        ve/pr magn
+        mg=[fld]/5.0
+        mess Solenoid field=[fld]T factor=[mg]  par=[par]
+        mess Eb=[e0]GeV, dq=[dq], Events=[nev]
+
+  if $VDIM(xmcoo,1)<6 then  
+    ve/cr xmcoo(6) r 
+  endif         
+*  ve/in xmcoo 140.0 208.5 274.5 422.8 0.0 70.0
+  ve/in xmcoo 75.19 140.46 209.08 274.59 0.0  423.40
+  if $VDIM(typ,1)<6 then  
+    ve/cr typ(6) r 
+  endif
+*  ve/in typ 1 1 1 2 0 1
+  ve/in typ 1  1  1  1  9  2
+  if $VDIM(xs,1)<6 then  
+    ve/cr xs(6) r 
+  endif
+*  ve/in xs 5.08  5.08  5.08  8.001  0.0  5.08
+  ve/in xs 5.08  5.08  5.08  5.08  20.0  8.001
+  if $VDIM(ys,1)<6 then  
+    ve/cr ys(6) r 
+  endif
+*  ve/in ys 5.08  5.08  5.08  30.001  0.0  5.08
+  ve/in ys 5.08  5.08  5.08  5.08  20.0  30.001
+  if $VDIM(zs,1)<6 then  
+    ve/cr zs(6) r 
+  endif
+*  ve/in zs 22.525  18.11  18.11  82.25  0.0  22.525
+ ve/in zs 18.29 22.3 18.37 18.37  80.0  82.25
+
+  if $VDIM(sval,1)<4 then  
+    ve/cr  sval(4) r 
+    ve/cr esval(4) r 
+  endif
+  if $VDIM(ncounp,1)<1 then  
+    ve/cr ncounp(3) r
+  else
+    ve/in ncounp 3*0 
+  endif
+  if $VDIM(vinit,1)<6 then  
+    ve/cr  vinit(6) r
+  else
+    ve/in vinit 6*0
+  endif
+  if $VDIM(eflevch,1)<2 then  
+    ve/cr eflevch(2) r 
+  endif
+ 
+  shell=[shell]-1
+  qsuf='sh_'//[shell]//'_'//[dif]
+*   qsuf='pr'
+*  mess qsuf=[qsuf]
+  mess Shell=[shell] Dif/RNDMSEQ=[dif]
+
+  hdir=/home/glamazdi/ntup_his/	
+  namh=[hdir]//'[e]_'//'[q1]_'//'[q2]_'//'[q3]_[q4]'//'[qsuf]'//'.his'
+  namn=[hdir]//'[e]_'//'[q1]_'//'[q2]_'//'[q3]_[q4]'//'[qsuf]'//'.nt'
+  naml=[hdir]//'[e]_'//'[q1]_'//'[q2]_'//'[q3]_[q4]'//'[qsuf]'//'.log'
+
+    if [sim]=0 then
+      goto nanalys
+    elseif [sim]=2 then
+      goto fill
+    endif
+
+  shell cp omg_0.ffr omg.ffr
+*  shell cp omg_0.ffr [qsuf]_[dif].ffr
+
+  k=$INDEX([e],'.')
+  if [k]=0 then
+     e=[e]//'.0'
+  endif
+  e0=[e]-0.0001
+  e1=[e]+0.00015
+  shell echo TRIG   [nev]   events >> omg.ffr
+  shell echo BEAMOMLIM    [e0]  [e1]   momentum limits >> omg.ffr
+  shell echo MOLLSHELL    [shell]  >> omg.ffr
+  shell echo RNDMSEQ   [dif]  >> omg.ffr
+  shell echo C   Beam spot reference limits >> omg.ffr
+  shell echo C                X          Y         SlopeX         SlopeY >> omg.ffr
+  shell echo BEAMYZLIM  -0.02 0.02 -0.02 0.02   0.000  0.000   0.000  0.000 >> omg.ffr
+  shell echo MAGNET05  10=[mg] >> omg.ffr
+  shell echo GPARVOL20 2=270 >> omg.ffr
+  shell echo GPARVOL20 12=0.0062 >> omg.ffr
+
+  if $VDIM(eqq)<7 then
+    ve/cr eqq(7) r
+  endif
+  ve/in eqq(1) [e]
+  ve/cr nm(5) i   6  1  2  3  4
+
+  do n=1,5
+*    ve/in magn(1) [j]
+    j=nm([n])
+    x=xmcoo([j])
+    typ=typ([j])
+    xs=xs([j])
+    ys=ys([j])
+    zs=zs([j])
+    k=$INDEX([x],'.')
+    if [k]=0 then
+       x=[x]//'.0'
+    endif
+*    fun=~/paw/moller/mag_optim/sett_mag.f([e])
+*    fun=sett_mag.f([e])
+*    q=$CALL([fun])
+*!!!!!!!!
+    q=magn([j])
+    if [j]=[nq] then
+       q=[q]+[dq]
+    endif
+    k=$INDEX([q],'.')
+    if [k]=0 then
+       q=[q]//'.'
+    endif
+     nam='MAGNET0'//[j]
+     shell echo [nam]  [typ] \'HALL\'  0.    0.  [x]    0  [xs]   [ys]   [zs]  [q]    0    0    Q one  >> omg.ffr
+    j1=[j]+1
+    ve/in eqq([j1]) [q]
+  enddo
+
+	if [sim]=1 then
+    shell cd   /home/glamazdi/FARM/
+    shell jsub /home/glamazdi/FARM/[qsuf]_[dif]
+    shell cd   /home/glamazdi/comgeant/g2p/
+    goto eend
+	elseif [sim]=5 then
+    shell nice ../code/comg_batch.rhws3u.exe > log
+	endif
+    shell mv log [naml]
+    shell cp csimout.nt [namn]
+
+  fill:
+
+     if $FEXIST([namn])=0 then
+     mess No file [namn] 
+     endif
+
+     if $FEXIST([naml])=0 then
+     mess No file [naml] 
+     endif
+
+  clo 0
+  h/del 0
+
+*  h/fil 1 csimout.nt
+   h/fil 1 [namn] 
+
+      if  [fil]=1 then
+            exec  fill lun=lun1 id=1000 cut=0
+      elseif [fil]=2 then
+            exec  fill_2358 lun=lun1 id=1000 cut=0 
+      elseif [fil]=3 then
+             exec  fill_2367 lun=lun1 id=1000 cut=0
+      elseif [fil]=4 then
+            exec  fill_1258 lun=lun1 id=1000 cut=0 
+      elseif [fil]=5 then
+             exec  fill_1256 lun=lun1 id=1000 cut=0
+      endif
+ zone 1 2
+ hi/pl 1010
+ set hcol 2
+ hi/pl 1011 s
+ set hcol 6
+ hi/pl 1012 s
+ set hcol 4
+ hi/pl 1013 s
+ set hcol 1
+ hi/pl 1020
+ set hcol 2
+ hi/pl 1021 s
+ set hcol 6
+ hi/pl 1022 s
+ set hcol 4
+ hi/pl 1023 s
+ set hcol 1
+ zone
+  clo 1
+  cd //pawc
+  1dh 1003 'E,shell' 6 0. 6.
+  h/put_vec/con 1003 eqq
+
+  h/fil 1 [namh] ! N
+  hrout 0
+
+  nanalys:
+
+  clo 0
+  cd //pawc
+
+  h/get_vec/con 1003 vinit
+*  ve/pri vinit
+*  ve/pri eqq
+  nsim=$HINFO(1030,'ENTRIES')
+  n1arm=$HINFO(1031,'ENTRIES')
+  nrarm=$HINFO(1032,'ENTRIES')
+  n2arm=$HINFO(1033,'ENTRIES')
+  anp=$HINFO(1033,'MEAN')
+  anpr=$HINFO(1033,'RMS')
+  anp1=$HINFO(1031,'MEAN')
+  eanp=$SIGMA([anpr]/SQRT([n2arm]))
+  acc1= $SIGMA(REAL([n2arm])/REAL([nsim]))
+  eacc1=$SIGMA(SQRT([acc1]*(1.-[acc1])/[nsim]))
+  acc2=$SIGMA(REAL([n2arm])/REAL([n1arm]))
+  eacc2=$SIGMA(SQRT([acc2]*(1.-[acc2])/[n1arm]))
+  theta=$HINFO(1013,'RMS')
+  phi=$HINFO(1023,'RMS')
+  err=$SIGMA(100./SQRT([n2arm]))
+  tmean=$HINFO(1011,'MEAN')
+
+  ve/in  sval(1)  [anp]
+  ve/in esval(1) [eanp]
+  ve/in  sval(2)  [acc1]
+  ve/in esval(2) [eacc1]
+  ve/in  sval(3)  [acc2]
+  ve/in esval(3) [eacc2]
+  mess Events=[nsim] Left arm=[n1arm]  Right arm=[nrarm]   Coinc=[n2arm]
+  mess Ener=[e]  An.power=[anp]+/-[eanp]  An.pow.single=[anp1]  Acc=[acc1]+/-[eacc1]
+  mess Theta=[theta]    Phi=[phi]  Stat.Err=[err]  Single arm Theta mean=[tmean]
+  mess file=[namn]
+  ve/in ncounp(1:3) [nsim] [n1arm] [n2arm]
+  if $VDIM(kin,1)<1 then  
+    ve/cr kin(8) r
+  endif
+  ve/in kin [theta] [phi] [n1arm] [nrarm] [n2arm] [anp] [err] [anp1]
+
+ ve/write nd(1),magn(1),magn(2),magn(3),magn(4),magn(6),kin(1),kin(2),kin(3),kin(4),kin(5),kin(6),kin(7),kin(8),magn(5) lev_temp.dat (F4.0,7F6.2,3F8.0,F9.5,F6.3,F7.3,F5.2)
+ shell cat lev_temp.dat >> sum_opt_levchuk.dat
+ 
+  eend:
+*	enddo
+
+RETURN
+
+
+
+
+
+

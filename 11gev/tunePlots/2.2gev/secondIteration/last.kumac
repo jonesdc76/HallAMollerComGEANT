@@ -1,0 +1,21 @@
+*** Begin of history file: Thu Jun 28 13:43:27 2018
+hi/file 1 tuned.his
+hi/plot 1010
+hi/plot 1010 s
+hi/plot 1013 s
+zone 1 2
+hi/plot 1010
+hi/plot 1013 s
+hi/plot 1030
+hi/plot 1030
+hi/plot 1030
+hi/plot 1010
+hi/plot 1013 s
+hi/plot 1020
+hi/plot 1023 s
+hi/plot 1010
+hi/plot 1013 s
+hi/plot 1020
+hi/plot 1023 s
+exit
+*** End   of history file: Thu Jun 28 16:14:58 2018

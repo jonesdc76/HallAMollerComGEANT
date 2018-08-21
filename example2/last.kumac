@@ -1,0 +1,10 @@
+*** Begin of history file: Fri Feb 23 12:22:42 2018
+exec run_energy
+1
+shell ls
+shell ls -lt ../ntup*
+TRIG 10
+shell ls -lt
+shell ls -lt ../ntup*
+exit
+*** End   of history file: Fri Feb 23 12:30:31 2018

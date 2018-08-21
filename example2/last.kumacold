@@ -1,0 +1,6 @@
+*** Begin of history file: Fri Feb 23 12:08:19 2018
+shell ls
+exec run_energty
+exec run_energy
+exit
+*** End   of history file: Fri Feb 23 12:09:54 2018

@@ -1,0 +1,9 @@
+*** Begin of history file: Tue Apr 24 23:27:19 2018
+opt_an
+shell ls
+cp ../csimout.nt .
+shell cp ../csimout.nt .
+opt_an
+exec opt_an
+exit
+*** End   of history file: Tue Apr 24 23:28:56 2018

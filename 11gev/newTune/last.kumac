@@ -1,0 +1,10 @@
+*** Begin of history file: Tue Apr 24 23:30:14 2018
+exec opt_an
+exec opt_an file=Q1_.5.nt
+shell ls
+exec opt_an file=Q1_.6.nt
+exec opt_an file=Q1_.55.nt
+exec opt_an file=Q1_.45.nt
+exec opt_an file=Q1_.4.nt
+exit
+*** End   of history file: Tue Apr 24 23:39:30 2018
