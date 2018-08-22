@@ -1,0 +1,25 @@
+MACRO avt 
+ ve/re nn,eb,as1,er1,as2,er2,as3,er3,lev,err test.dat
+ zone
+* fort/fil 56 levchuk.ps
+* meta 56 -112
+ nr=$sigma(NCO(nn))
+ opt nbox
+ opt grid
+ set mtyp 20
+ set pmci 1
+ sigma rn=array([nr],1#[nr])
+ ve/cr parv(5) r
+ set dmod 3
+ ve/in parv(1) 0.5
+ ve/fit  rn  lev err  p0 ! 1 parv
+ set dmod 0
+ gr/hpl/err rn lev  er1 err [nr] 20 0.2
+ atitle 'Runs'   'Levchuk-effect, au'  
+ selnt 1
+* text 13.0 20.5 'Levchuk-effect, Eb=2.0GeV' 0.4 0 C
+ selnt 10
+* close 56
+
+RETURN 
+

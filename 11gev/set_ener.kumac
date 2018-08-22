@@ -1,0 +1,17 @@
+MACRO set_ener e=0.8
+*
+* --- changes the beam energy and tunes the magnets
+*
+  dirold=$SHELL('pwd')
+  lcd ~/paw/moller/mag_optim/
+  beammom [e] [e] 0.
+  ve/cr magn(1) i
+  do i=1,4
+    ve/in magn(1) [i]
+    e=$RSIGMA([e])
+    cmn='sett_mag.f('//[e]//')'
+    f=$CALL([cmn])
+    magf [i] [f]
+ enddo
+ lcd [dirold]
+RETURN

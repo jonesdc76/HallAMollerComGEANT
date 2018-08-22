@@ -1,0 +1,33 @@
+MACRO levch_avt 
+
+ nr=30
+ ve/cr lv([nr])  r _  
+0.00248 0.00257 0.00147 0.00504 0.00421 0.00475 0.00576 0.00354 0.00293 0.00325 _
+0.00234 0.00431 0.00412 0.00321 0.00273 0.00333 0.00298 0.00150 0.00375 0.00305 _
+0.00403 0.00372 0.00587 0.00136 0.00410 0.00264 0.00554 0.00427 0.00318 0.00300
+
+
+* ve/cr err([nr]) r _
+ sigma err=array([nr],0.00179#0.00179) 
+
+  zone
+  opt nbox
+  
+* fort/fil 56 levch_avt.ps
+* meta 56 -112
+ sigma er1=array([nr],0.001#0.001)
+ sigma rn=array([nr],1#[nr])
+ ve/cr parv(5) r
+ set dmod 3
+ ve/in parv(1) 0.5
+ ve/fit  rn  lv err  p0 ! 1 parv 
+ set dmod 0
+ gr/hpl/err rn lv  er1 err [nr] 20 0.2
+ atitle 'Runs'   'Levchuk effect, "Y#'  
+ selnt 1
+ text 10.0 18.5 'Levchuk Effect Sum' 0.4 0 C
+ selnt 10
+* close 56
+
+RETURN 
+

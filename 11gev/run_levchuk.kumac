@@ -1,0 +1,208 @@
+MACRO run_levchuk e=3.5 nev=2000 suf=0 sim=1 shell=1 cutm=0 nquad=2 par=2 pri=0
+
+*
+* === run GEANT for Moller
+*     sim=1 - run GEANT interacively, write an ntuple, read it, 
+*             fill histograms, write them out and analyze the data
+*         0 - read the histogram file and analyze the data
+*
+*
+
+
+    if [nquad]=3 then
+    mess THREE QUADS SETTING
+    elseif [nquad]=2 then
+    if $VDIM(quad,1)<4 then 
+    ve/cr quad(4) r
+    endif
+    mess TWO QUADS SETTING
+    exec sett_acc  e=[e] nquad=[nquad] par=[par] pri=[pri]
+*    ve/pri quad
+    else
+    message NQUAD is not exist
+    endif
+
+  if $VDIM(magn,1)<1 then  
+    ve/cr magn(1) i
+  endif
+  if $VDIM(xmcoo,1)<4 then  
+    ve/cr xmcoo(4) r 
+  endif
+  ve/in xmcoo 100.0 208.5 274.5 422.8
+  if $VDIM(typ,1)<4 then  
+    ve/cr typ(4) r 
+  endif
+  ve/in typ 1  1  1  2
+  if $VDIM(xs,1)<4 then  
+    ve/cr xs(4) r 
+  endif
+  ve/in xs 5.08  5.08  5.08  8.001
+  if $VDIM(ys,1)<4 then  
+    ve/cr ys(4) r 
+  endif
+  ve/in ys 5.08  5.08  5.08  30.001
+  if $VDIM(zs,1)<4 then  
+    ve/cr zs(4) r 
+  endif
+  ve/in zs 22.525  18.11  18.11  82.25
+
+  if $VDIM(sval,1)<4 then  
+    ve/cr  sval(4) r 
+    ve/cr esval(4) r 
+  endif
+  if $VDIM(ncounp,1)<1 then  
+    ve/cr ncounp(3) r
+  else
+    ve/in ncounp 3*0 
+  endif
+  if $VDIM(vinit,1)<5 then  
+    ve/cr  vinit(5) r
+  else
+    ve/in vinit 5*0
+  endif
+  if $VDIM(eflevch,1)<2 then  
+    ve/cr eflevch(2) r 
+  endif
+
+  shell=[shell]-1
+  mess Shell=[shell]
+  qsuf='shell_'//[shell]
+  hdir=/scratch/glamazdi/ntup-his/
+  namh=[hdir]//'F_ener_'//[e]//'_'//[nev]//'_'//[qsuf]//'.his'
+  namn=[hdir]//'F_ener_'//[e]//'_'//[nev]//'_'//[qsuf]//'.nt'
+  lnam=[hdir]//'F_log_'//[e]//'_'//[nev]//'_'//[shell]
+*  nams=[hdir]//[qsuf]//'.nt'
+*  naml=[hdir]//[qsuf]//'.log'
+*  nams='F_'//[e]//'_'//[nev]//'_'//[qsuf]//'.nt'
+  nams=csimout.nt
+  naml='F_lo_'//[e]//'_'//[nev]//'_'//[shell] 
+
+  if [sim]=0 then
+      goto nanalys
+  endif  
+
+  shell cp omg_0.ffr omg.ffr
+  k=$INDEX([e],'.')
+  if [k]=0 then
+     e=[e]//'.0'
+  endif
+  e1=[e]+0.0001
+  shell echo TRIG   [nev]   events >> omg.ffr
+  shell echo BEAMOMLIM    [e]  [e1]   momentum limits >> omg.ffr
+   shell echo MOLLSHELL    [shell]  >> omg.ffr
+
+  if $VDIM(eqq)<5 then
+    ve/cr eqq(5) r
+  endif
+  ve/in eqq(1) [e]
+  ve/in eqq(2) [shell]
+
+  do j=1,4
+    ve/in magn(1) [j]
+    x=xmcoo([j])
+    typ=typ([j])
+    xs=xs([j])
+    ys=ys([j])
+    zs=zs([j])
+    k=$INDEX([x],'.')
+    if [k]=0 then
+       x=[x]//'.0'
+    endif
+
+       if [nquad]=3 then
+    fun=sett_mag.f([e])
+    q=$CALL([fun])
+       elseif [nquad]=2 then 
+    q=quad([j])
+       endif
+
+    if [j]=[nq] then
+       q=[q]+[dq]
+    endif
+    k=$INDEX([q],'.')
+    if [k]=0 then
+       q=[q]//'.'
+    endif
+     nam='MAGNET0'//[j]
+    shell echo [nam]   [typ] \'HALL\'  0.    0.  [x]    0  [xs]   [ys]   [zs]  [q]    0    0    Q one  >> omg.ffr
+    j1=[j]+1
+    ve/in eqq([j1]) [q]
+  enddo
+
+     if [sim]=1 then
+     host=$SHELL('hostname')
+     if [host]=ifarml3.jlab.org then
+     shell nice comg_batch.rhws3_b.exe > [naml]
+     elseif [host]=jlabl1 then
+     shell nice comg_batch.rhws3_b.exe > [naml]
+     else   
+     shell comg_batch.rh7.2_03.exe > [naml]
+     endif
+
+     if $FEXIST([nams])=0 then
+     mess No file [nams] 
+     else 
+     shell mv [nams] [namn]
+     endif
+
+     if $FEXIST([naml])=0 then
+     mess No file [naml] 
+     else 
+     shell mv [naml] [lnam]
+     endif
+
+   endif
+
+ nanalys:
+
+  clo 0
+  h/del 0
+
+*  h/fil 1 csimout.nt
+   h/fil 1 [namn] 
+  exec  fill lun=lun1 id=1000 cut=[cutm]
+  clo 1
+  cd //pawc
+  1dh 1003 'E,shell' 5 0. 5.
+  h/put_vec/con 1003 eqq
+
+  h/fil 1 [namh] ! N
+  hrout 0
+
+  hanalys:
+
+  clo 0
+  cd //pawc
+
+  h/get_vec/con 1003 vinit
+*  ve/pri vinit
+  ve/pri eqq
+  nsim=$HINFO(1030,'ENTRIES')
+  n1arm=$HINFO(1031,'ENTRIES')
+  n2arm=$HINFO(1033,'ENTRIES')
+  anp=$HINFO(1033,'MEAN')
+  anpr=$HINFO(1033,'RMS')
+  eanp=$SIGMA([anpr]/SQRT([n2arm]))
+  acc1= $SIGMA(REAL([n2arm])/REAL([nsim]))
+  eacc1=$SIGMA(SQRT([acc1]*(1.-[acc1])/[nsim]))
+  acc2=$SIGMA(REAL([n2arm])/REAL([n1arm]))
+  eacc2=$SIGMA(SQRT([acc2]*(1.-[acc2])/[n1arm]))
+  
+  ve/in  sval(1)  [anp]
+  ve/in esval(1) [eanp]
+  ve/in  sval(2)  [acc1]
+  ve/in esval(2) [eacc1]
+  ve/in  sval(3)  [acc2]
+  ve/in esval(3) [eacc2]
+  ve/in ncounp(1:3) [nsim] [n1arm] [n2arm]
+  mess Events=[nev] Hits=[n2arm]
+  mess Ener=[e] An.power=[anp]+/-[eanp]  Acc=[acc1]+/-[eacc1]
+
+  eend:
+RETURN
+
+
+
+
+
+

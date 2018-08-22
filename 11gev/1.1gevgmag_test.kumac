@@ -1,0 +1,30 @@
+MACRO gmag_test
+ beammom 2.20 2.2001 0.001
+* mollang 90.0 90.001  0 0.001
+ magf 1    0.25
+ magf 2    1.275
+ magf 3    0.
+ magf 4    0.95
+ magf 6    3
+ magf 5    3
+ 
+
+ zone 1 2
+exec plot_setup z2=800 y2=15 y1=-70
+*exec plot_setup z2=2700 y2=0.7 y1=-0.7
+* exec plot_setup z1=-5 z2=20 y2=5 y1=-5
+exec eve n=10
+ exec plot_setup z2=800 proj=2 x1=-10 x2=10
+* exec plot_setup z2=2700 proj=2 x1=-0.2 x2=0.2
+* exec plot_setup proj=2 z1=-5 z2=20 x2=5 x1=-5
+exec eve n=10
+ wait
+ mollang 65. 115. -50. -10.
+ exec plot_setup z2=900 y2=15 y1=-70
+ exec eve n=10000
+ exec plot_setup z2=900 proj=2 x1=-10 x2=10
+ exec eve n=10000
+exec fill lun=PAWC
+*hi/file 2 test ! N
+*hrout 0
+RETURN

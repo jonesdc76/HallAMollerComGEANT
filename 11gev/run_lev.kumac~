@@ -1,0 +1,283 @@
+MACRO run_lev e=3.5 nev=500 suf=0 sim=0 shell=1 cutm=0 nquad=3 par=2 pri=0 ver=2 chain=0
+
+*
+* === run GEANT for Moller
+*
+*        e0 - beam energy, GeV
+*       nev - number of generated events
+*     sim=0 - read the histogram file and analyze the data
+*        =1 - GEANT simulation
+*     ver=1 - run batch IRAFM GEANT-RH7.2, write an ntuple
+*         2 - run batch EL3 GEANT-RHWR, write an ntuple
+*         3 - run interactively JLABS GEANT-RH7.2, write an ntuple, read it, 
+*             fill histograms, write them out and analyze the data
+*         4 - run interactively JLABL/IFARM GEANT-RHWR, write an ntuple,  
+*             read it, fill histograms, write them out and analyze the data
+*   shell=0 - scattering on a free e-
+*         1 - scattering on e- from L shell in Fe
+*         2 - scattering on e- from K shell in Fe
+*     nquad - number of quads for moller setting
+*     par=2 - moller settings in kGauss
+*     pri=0 - no screen output of sett_acc.kumac 
+*   chain=0 - use one ntuple for analys
+*   chain>0 - use a few (chain) of ntuples for analys 
+*   !!! if chain>0 - names of ntuples must be loaded !!!
+*
+opt grid
+
+
+    if [nquad]=3 then
+      mess THREE QUADS SETTING
+    elseif [nquad]=2 then
+        if $VDIM(quad,1)<4 then 
+        ve/cr quad(4) r
+        endif
+      mess TWO QUADS SETTING
+      exec sett_acc  e=[e] nquad=[nquad] par=[par] pri=[pri]
+    else
+      message NQUAD is not exist
+    endif
+
+  if $VDIM(magn,1)<1 then  
+    ve/cr magn(1) i
+  endif
+  if $VDIM(xmcoo,1)<4 then  
+    ve/cr xmcoo(4) r 
+  endif
+  ve/in xmcoo 100.0 208.5 274.5 422.8
+  if $VDIM(typ,1)<4 then  
+    ve/cr typ(4) r 
+  endif
+  ve/in typ 1  1  1  2
+  if $VDIM(xs,1)<4 then  
+    ve/cr xs(4) r 
+  endif
+  ve/in xs 5.08  5.08  5.08  8.001
+  if $VDIM(ys,1)<4 then  
+    ve/cr ys(4) r 
+  endif
+  ve/in ys 5.08  5.08  5.08  30.001
+  if $VDIM(zs,1)<4 then  
+    ve/cr zs(4) r 
+  endif
+  ve/in zs 22.525  18.11  18.11  82.25
+
+  if $VDIM(sval,1)<4 then  
+    ve/cr  sval(4) r 
+    ve/cr esval(4) r 
+  endif
+  if $VDIM(ncounp,1)<1 then  
+    ve/cr ncounp(3) r
+  else
+    ve/in ncounp 3*0 
+  endif
+  if $VDIM(vinit,1)<5 then  
+    ve/cr  vinit(5) r
+  else
+    ve/in vinit 5*0
+  endif
+  if $VDIM(eflevch,1)<2 then  
+    ve/cr eflevch(2) r 
+  endif
+
+  shell=[shell]-1
+  mess Shell=[shell]
+  qsuf=[ver]//'_shell_'//[shell]
+  hdir=../ntup/
+***  hdir=../ntup/
+  namh=[hdir]//'geant_'//[e]//'_'//[nev]//'_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.his'
+  namn=[hdir]//'geant_'//[e]//'_'//[nev]//'_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.nt'
+  lnam=[hdir]//'geant_'//[e]//'_'//[nev]//'_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.log'
+   if [ver]<3 then
+   nams=[hdir]//[qsuf]//'.nt'
+   naml=[hdir]//[qsuf]//'.log'
+   else
+   nams=csimout.nt
+   naml='geant_'//[e]//'_'//[nev]//'_'//[qsuf]//'.log'
+  endif  
+
+  if [sim]=0 then
+   goto nanalys
+  endif
+
+  if [ver]<3 then
+  shell cp omg_0.ffr omg_[ver]_[shell].ffr
+  else
+  shell cp omg_0.ffr omg.ffr
+  endif
+
+  k=$INDEX([e],'.')
+  if [k]=0 then
+     e=[e]//'.0'
+  endif
+  e1=[e]+0.0001
+
+  if [ver]<3 then
+  shell echo TRIG   [nev]   events >> omg_[ver]_[shell].ffr
+  shell echo BEAMOMLIM    [e]  [e1]   momentum limits >> omg_[ver]_[shell].ffr
+  shell echo MOLLSHELL    [shell]  >> omg_[ver]_[shell].ffr
+  else
+  shell echo TRIG   [nev]   events >> omg.ffr
+  shell echo BEAMOMLIM    [e]  [e1]   momentum limits >> omg.ffr
+  shell echo MOLLSHELL    [shell]  >> omg.ffr
+  endif
+
+  if $VDIM(eqq)<5 then
+    ve/cr eqq(5) r
+  endif
+  ve/in eqq(1) [e]
+  ve/in eqq(2) [shell]
+
+  do j=1,4
+    ve/in magn(1) [j]
+    x=xmcoo([j])
+    typ=typ([j])
+    xs=xs([j])
+    ys=ys([j])
+    zs=zs([j])
+    k=$INDEX([x],'.')
+    if [k]=0 then
+       x=[x]//'.0'
+    endif
+
+       if [nquad]=3 then
+    fun=sett_mag.f([e])
+    q=$CALL([fun])
+       elseif [nquad]=2 then 
+    q=quad([j])
+       endif
+
+    if [j]=[nq] then
+       q=[q]+[dq]
+    endif
+    k=$INDEX([q],'.')
+    if [k]=0 then
+       q=[q]//'.'
+    endif
+     nam='MAGNET0'//[j]
+
+    if [ver]<3 then     
+    shell echo [nam]   [typ] \'HALL\'  0.    0.  [x]    0  [xs]   [ys]   [zs]  [q]    0    0    Q one  >> omg_[ver]_[shell].ffr
+    else
+    shell echo [nam]   [typ] \'HALL\'  0.    0.  [x]    0  [xs]   [ys]   [zs]  [q]    0    0    Q one  >> omg.ffr
+    endif
+
+    j1=[j]+1
+    ve/in eqq([j1]) [q]
+  enddo
+wait
+     if [sim]=0 then
+       goto nanalys
+     endif
+       if [ver]<3 then
+       shell  cd /home/glamazdi/FARM/
+       shell jsub /home/glamazdi/FARM/[qsuf]
+       shell cd /home/glamazdi/comgeant/run/
+       goto eend
+       elseif [ver]=3 then
+         host=$SHELL('hostname')
+         if [host]=ifarml3.jlab.org then
+         mess WRONG COMPUTER (CERNLIB/LINUX version)
+         elseif [host]=jlabl1.jlab.org then
+         mess WRONG COMPUTER (CERNLIB/LINUX version)
+         else   
+         shell comg_batch.rh7.2_03.exe > [naml]
+         endif
+         elseif [ver]=4 then
+         host=$SHELL('hostname')
+         if [host]=ifarml3.jlab.org then
+         shell comg_batch.rhws3_b.exe > [naml]
+         elseif [host]=jlabl1.jlab.org then
+         shell comg_batch.rhws3_b.exe > [naml]
+         else   
+         mess WRONG COMPUTER (CERNLIB/LINUX version)
+         endif
+       else
+       mess WRONG SIM parameter
+     endif
+
+ nanalys:
+
+     if $FEXIST([nams])=0 then
+     mess No file [nams] 
+     else 
+     shell mv [nams] [namn]
+     endif
+
+     if $FEXIST([naml])=0 then
+     mess No file [naml] 
+     else 
+     shell mv [naml] [lnam]
+     endif
+
+***  nanalys:
+
+  clo 0
+  h/del 0
+
+*  h/fil 1 csimout.nt
+  if [chain]=0 then
+  h/fil 1 [namn]
+  exec  fill lun=lun1 id=1000 cut=[cutm]
+  else
+  nt2=[hdir]//'geant_'//[e]//'_600003_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.nt'
+  nt3=[hdir]//'geant_'//[e]//'_600004_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.nt'
+  nt4=[hdir]//'geant_'//[e]//'_600000_'//[qsuf]//'_'//[nquad]//'_'//[par]//'.nt'
+*  chain_name='nt_chain_'//[qsuf]
+  chain_name='1'//[shell]
+  chain [chain_name] [namn] [nt2] 
+*[nt3] [nt4]
+  mess Chain=[chain_name]
+  mess [namn]
+  mess [nt2]
+*  mess [nt3]
+*  mess [nt4]
+  wait
+  exec  fill lun=[chain_name] id=1000 cut=[cutm]
+  endif
+
+  clo 1
+  cd //pawc
+  1dh 1003 'E,shell' 5 0. 5.
+  h/put_vec/con 1003 eqq
+
+  h/fil 1 [namh] ! N
+  hrout 0
+
+  hanalys:
+
+  clo 0
+  cd //pawc
+
+  h/get_vec/con 1003 vinit
+*  ve/pri vinit
+  ve/pri eqq
+  nsim=$HINFO(1030,'ENTRIES')
+  n1arm=$HINFO(1031,'ENTRIES')
+  n2arm=$HINFO(1033,'ENTRIES')
+  anp=$HINFO(1033,'MEAN')
+  anpr=$HINFO(1033,'RMS')
+  eanp=$SIGMA([anpr]/SQRT([n2arm]))
+  acc1= $SIGMA(REAL([n2arm])/REAL([nsim]))
+  eacc1=$SIGMA(SQRT([acc1]*(1.-[acc1])/[nsim]))
+  acc2=$SIGMA(REAL([n2arm])/REAL([n1arm]))
+  eacc2=$SIGMA(SQRT([acc2]*(1.-[acc2])/[n1arm]))
+  
+  ve/in  sval(1)  [anp]
+  ve/in esval(1) [eanp]
+  ve/in  sval(2)  [acc1]
+  ve/in esval(2) [eacc1]
+  ve/in  sval(3)  [acc2]
+  ve/in esval(3) [eacc2]
+  ve/in ncounp(1:3) [nsim] [n1arm] [n2arm]
+  mess Events=[nev] Hits=[n2arm]
+  mess Ener=[e] An.power=[anp]+/-[eanp]  Acc=[acc1]+/-[eacc1]
+
+  eend:
+RETURN
+
+
+
+
+
+
